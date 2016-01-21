@@ -62,7 +62,7 @@ func handleRequest(conn net.Conn) {
   for { // read first line
     b,_,_ := reader.ReadLine()
     resp := string(b) // extract the text from the buffer
-    fmt.Println(resp); 
+    // fmt.Println(resp); 
     arr := strings.Split(resp, " ") // split into OK and <version>
     if arr[0]== "write" || arr[0]=="read" || arr[0]== "delete" || arr[0] == "cas"{
       name := arr[1]
@@ -80,7 +80,6 @@ func handleRequest(conn net.Conn) {
         size,err := strconv.Atoi(arr[2])
         contents := readerHelper(reader,size)
         bcont := []byte(contents)
-        fmt.Sprintln("size of return read %v",len(bcont))
         err = ioutil.WriteFile(name,bcont,0644)
         sendError(conn,err,4)
         var v int
@@ -108,15 +107,15 @@ func handleRequest(conn net.Conn) {
            sendError(conn,nil,2)
          }
       } else if arr[0] == "cas"{
-        size,_ := strconv.Atoi(arr[2])
+        size,_ := strconv.Atoi(arr[3])
         contents := readerHelper(reader,size)
         if ok{
           v,_ := strconv.Atoi(arr[2])
           if m[name].version == v{
             var fi FileInfo
-            fi.size,_ = strconv.Atoi(arr[2])
+            fi.size,_ = strconv.Atoi(arr[3])
             fi.version = m[name].version + 1
-            fi.lifetime,_ = strconv.Atoi(arr[3])
+            fi.lifetime,_ = strconv.Atoi(arr[4])
             m[name]=fi
             bcont := []byte(contents)
             err := ioutil.WriteFile(name,bcont,0644) //error here
