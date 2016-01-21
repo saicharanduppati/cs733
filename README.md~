@@ -8,4 +8,4 @@ Steps to follow to Use
 Download or clone the directory in to the src folder of $GOROOT on your local system
 And use the following commands to run the program
 go install cs733/assignment1
-go test cs733/assigment1 to test it
+go test cs733/assigment1
